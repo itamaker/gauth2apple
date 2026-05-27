@@ -17,7 +17,7 @@ jobs:
       matrix:
         include:
           - os: macos-latest
-            target: macos-universal2
+            target: macos-arm64
           - os: ubuntu-latest
             target: linux-x86_64
           - os: windows-latest
@@ -30,26 +30,9 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install zbar for both archs and fuse a universal dylib (macOS)
+      - name: Install zbar (macOS)
         if: runner.os == 'macOS'
-        run: |
-          set -euxo pipefail
-          # arm64 zbar from /opt/homebrew (native brew on macos-latest)
-          brew install zbar
-
-          # x86_64 zbar from /usr/local Homebrew (preinstalled on macos-latest under Rosetta)
-          arch -x86_64 /usr/local/bin/brew install zbar
-
-          ARM_LIB="$(brew --prefix zbar)/lib/libzbar.0.dylib"
-          INTEL_LIB="$(arch -x86_64 /usr/local/bin/brew --prefix zbar)/lib/libzbar.0.dylib"
-
-          # Sanity: confirm the two dylibs are single-arch as expected
-          lipo -info "$ARM_LIB"
-          lipo -info "$INTEL_LIB"
-
-          # Fuse into a universal dylib and replace the arm64 one in place
-          sudo lipo -create "$ARM_LIB" "$INTEL_LIB" -output "$ARM_LIB"
-          lipo -info "$ARM_LIB"
+        run: brew install zbar
 
       - name: Install zbar + tkinter (Linux)
         if: runner.os == 'Linux'
@@ -63,17 +46,9 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
 
-      - name: Build universal2 .app (macOS)
+      - name: Build .app bundle (macOS)
         if: runner.os == 'macOS'
-        run: |
-          ARM_LIB="$(brew --prefix zbar)/lib/libzbar.0.dylib"
-          pyinstaller \
-            --windowed \
-            --name gauth2apple \
-            --target-arch universal2 \
-            --collect-all pyzbar \
-            --add-binary "$ARM_LIB:." \
-            gauth2apple_gui.py
+        run: pyinstaller --windowed --name gauth2apple --collect-all pyzbar gauth2apple_gui.py
 
       - name: Build binary (Linux / Windows)
         if: runner.os != 'macOS'

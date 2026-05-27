@@ -43,9 +43,11 @@ Concretely:
 
 Grab the latest release from the [Releases page](../../releases/latest):
 
-- macOS (Apple Silicon + Intel): `gauth2apple-macos-universal2.zip` — unzip and run `gauth2apple.app` (one binary for both architectures)
+- macOS Apple Silicon (M1/M2/M3/M4): `gauth2apple-macos-arm64.zip` — unzip and run `gauth2apple.app`
 - Linux: `gauth2apple-linux-x86_64` — `chmod +x` and run
 - Windows: `gauth2apple-windows-x86_64.exe`
+
+**Intel Mac users**: there is no prebuilt Intel binary — please use **Option B (run from source)** below. (GitHub's free-tier Intel Mac runners queue for tens of minutes per build, so we don't publish an Intel artifact. The Python script runs natively on Intel Macs.)
 
 On macOS the binary is **unsigned**, so Gatekeeper will block it the first time. Either right-click → Open, or run once from a terminal:
 
@@ -136,7 +138,7 @@ git tag v0.1.0
 git push origin v0.1.0
 ```
 
-`.github/workflows/release.yml` builds on macOS (one universal2 binary covering arm64 + x86_64), Linux, and Windows runners via PyInstaller, then publishes the artifacts to a new GitHub Release.
+`.github/workflows/release.yml` runs PyInstaller on macOS (Apple Silicon), Linux, and Windows runners and publishes the artifacts to a new GitHub Release.
 
 To trigger a build manually without tagging, use **Actions → Release → Run workflow** from the GitHub UI.
 
