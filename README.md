@@ -43,8 +43,7 @@ Concretely:
 
 Grab the latest release from the [Releases page](../../releases/latest):
 
-- macOS Apple Silicon: `gauth2apple-macos-arm64.zip` — unzip and run `gauth2apple.app`
-- macOS Intel: `gauth2apple-macos-x86_64.zip` — unzip and run `gauth2apple.app`
+- macOS (Apple Silicon + Intel): `gauth2apple-macos-universal2.zip` — unzip and run `gauth2apple.app` (one binary for both architectures)
 - Linux: `gauth2apple-linux-x86_64` — `chmod +x` and run
 - Windows: `gauth2apple-windows-x86_64.exe`
 
@@ -137,7 +136,7 @@ git tag v0.1.0
 git push origin v0.1.0
 ```
 
-`.github/workflows/release.yml` runs PyInstaller on macOS (arm64 + x86_64), Linux, and Windows runners, then publishes the artifacts to a new GitHub Release.
+`.github/workflows/release.yml` builds on macOS (one universal2 binary covering arm64 + x86_64), Linux, and Windows runners via PyInstaller, then publishes the artifacts to a new GitHub Release.
 
 To trigger a build manually without tagging, use **Actions → Release → Run workflow** from the GitHub UI.
 
